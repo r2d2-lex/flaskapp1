@@ -1,5 +1,5 @@
 __pycache__/
-settings.py
+webapp/settings.py
 venv/
 webapp/
 .idea/
