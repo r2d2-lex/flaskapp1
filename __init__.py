@@ -1,9 +1,12 @@
 from flask import Flask, render_template
 from weather import wether_by_city
 from get_news import get_python_news
+from model import db
 
 app = Flask(__name__)
 app.config.from_pyfile('settings.py')
+db.init_app(app)
+
 @app.route('/')
 
 def index():
