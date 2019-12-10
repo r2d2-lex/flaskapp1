@@ -2,3 +2,4 @@ __pycache__/
 webapp/settings.py
 venv/
 .idea/
+*.db
