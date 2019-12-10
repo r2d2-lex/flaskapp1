@@ -1,5 +1,4 @@
 __pycache__/
 webapp/settings.py
 venv/
-webapp/
 .idea/
