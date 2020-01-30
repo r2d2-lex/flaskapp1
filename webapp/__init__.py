@@ -1,9 +1,17 @@
-from flask import Flask, render_template, flash, redirect, url_for
-from flask_login import LoginManager, login_user, logout_user, current_user, login_required
-from webapp.model import db, News, User
+from flask import Flask
+from flask_login import LoginManager
 
-from webapp.forms import LoginForm
-from webapp.weather import wether_by_city
+from webapp.model import db
+from webapp.admin.views import blueprint as admin_blueprint
+
+from webapp.news.views import blueprint as news_blueprint
+from webapp.news.views import index
+
+from webapp.user.views import blueprint as user_blueprint
+
+from webapp.user.models import User
+from webapp.user.forms import LoginForm
+
 #from webapp.get_news import get_python_news
 
 
@@ -14,54 +22,13 @@ def create_app():
 
     login_manager = LoginManager()
     login_manager.init_app(app)
-    login_manager.login_view = 'login'
+    login_manager.login_view = 'user.login'
+    app.register_blueprint(admin_blueprint)
+    app.register_blueprint(news_blueprint)
+    app.register_blueprint(user_blueprint)
 
     @login_manager.user_loader
     def load_user(user_id):
         return User.query.get(user_id)
-
-    @app.route('/')
-    def index():
-        weather = wether_by_city(app.config['WEATHER_CITY'])
-        page_title = "Прогноз погоды"
-        news_list = News.query.order_by(News.published.desc()).all()
-        print(news_list)
-        return render_template('index.html',weather=weather,page_title=page_title,news_list=news_list)
-
-    @app.route('/login')
-    def login():
-        if current_user.is_authenticated:
-            return redirect(url_for('index'))
-
-        title = "Авторизация"
-        login_form = LoginForm()
-        return render_template('login.html', page_title=title, form=login_form)
-
-    @app.route('/process-login', methods=['POST'])
-    def process_login():
-        form = LoginForm()
-        if form.validate_on_submit():
-            user = User.query.filter_by(username = form.username.data).first()
-            if user and user.check_password(form.password.data):
-                login_user(user)
-                flash('Вы вошли на сайт')
-                return redirect(url_for('index'))
-
-        flash('Неверное имя пользователя или пароль')
-        return redirect(url_for('login'))
-
-    @app.route('/logout')
-    def logout():
-        logout_user()
-        flash('Вы разлогинились')
-        return redirect(url_for('index'))
-
-    @app.route('/admin')
-    @login_required
-    def admin_index():
-        if current_user.is_admin:
-            return 'Привет админ'
-        else:
-            return 'Не админ'
 
     return app
