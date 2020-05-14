@@ -43,6 +43,7 @@ def logout():
 @blueprint.route('/register')
 def register():
     if current_user.is_authenticated:
+        flash('Вы зарегестрированы ;)')
         return redirect(url_for('news.index'))
     form = RegistrationForm()
     title = "Регистрация"
@@ -59,6 +60,10 @@ def process_reg():
         db.session.commit()
         flash('Вы успешно зарегистрировались!')
         return redirect(url_for('user.login'))
-    print(form.errors)
-    flash('Пожалуйста исправьте ошибки в форме')
-    return redirect(url_for('user.register'))
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash('Ошибка в поле "{}": - {}'.format(getattr(form, field).label.text, error))
+        print(form.errors)
+        flash('Пожалуйста исправьте ошибки в форме')
+        return redirect(url_for('user.register'))
