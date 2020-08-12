@@ -1,5 +1,6 @@
 from datetime import datetime
-from webapp.model import News, db
+from webapp.model import db
+from webapp.news.models import News
 
 import requests
 from bs4 import BeautifulSoup
@@ -19,7 +20,7 @@ def get_python_news():
     html = get_html("https://www.python.org/blogs/")
     if html:
         soup = BeautifulSoup(html,'html.parser')
-        all_news = soup.find('ul',class_='list-recent-posts')
+        all_news = soup.find('ul', class_='list-recent-posts')
         all_news = all_news.findAll('li')
         result_news = []
         for news in all_news:

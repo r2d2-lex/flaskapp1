@@ -9,7 +9,7 @@ def wether_by_city(city_name):
         "q" : city_name,
         "format" : "json",
         "num_of_days" : 1,
-        "lang" : "ru"
+        "lang" : "ru",
     }
     try:
         result = requests.get(url,params=param)
