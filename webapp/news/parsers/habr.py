@@ -22,7 +22,7 @@ def get_habr_snipperts():
             url = news.find('a',  class_='post__title_link')['href']
             published = news.find('span',class_='post__time').text
             published = parse_habr_date(published)
-            print(title, url, published, "[*]")
+            #print(title, url, published, "[*]")
             save_news(title, url, published)
 
 
@@ -36,7 +36,6 @@ def get_news_content():
             #article = soup.find('div', class_='post__text-html').text
             # html разметка
             article = soup.find('div', class_='post__text-html').decode_contents()
-            #print(article)
             if article:
                 news.text = article
                 db.session.add(news)
