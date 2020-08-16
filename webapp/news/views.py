@@ -1,4 +1,5 @@
-from flask import abort, Blueprint, render_template, current_app
+from flask import abort, Blueprint, current_app, render_template
+from webapp.news.forms import CommentForm
 from webapp.weather import wether_by_city
 from webapp.news.models import News
 
@@ -21,4 +22,10 @@ def single_news(news_id):
     if not my_news:
         abort(404)
 
-    return render_template('news/view_one.html', page_title=my_news.title, news=my_news)
+    comment_form = CommentForm(news_id=my_news.id)
+    return render_template('news/view_one.html', page_title=my_news.title, news=my_news, comments_form=comment_form)
+
+
+@blueprint.route('/news/comment', methods=['POST'])
+def add_comment():
+    pass
